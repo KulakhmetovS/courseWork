@@ -3,6 +3,7 @@
 
 int **Creategraph(int **, int); // Функция для генерирования графа
 void GraphColors(int **, int *, int);   //Функция для раскрашивания графа
+int ColorNumber(int *, int);    // Функция для нахождения хроматического числа
 
 int main() {
     int size = 0; // количество вершин в графе
@@ -32,6 +33,8 @@ int main() {
         printf("Вершина %d - цвет %d\n", i+1, colors[i]);
     }
 
+    int number = ColorNumber(colors, size);
+    printf("Хроматическое число графа = %d", number);
 
     // Освобождение памяти
     for(int i = 0; i < size; i++)
@@ -91,4 +94,14 @@ void GraphColors(int **graph, int *colors, int size)
             }
         }
     }
+}
+
+int ColorNumber(int *colors, int size)
+{
+    int number = 0;
+
+    for(int i = 0; i < size; i++)
+        if(number < colors[i]) number = colors[i];  //Находим наибольший индекс цвета
+
+    return number;
 }
