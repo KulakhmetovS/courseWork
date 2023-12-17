@@ -1,9 +1,16 @@
 from ctypes import *
 #Загружаем библиотеку на С
 Random_Graph_Matrix = CDLL('./RandGraph.so')
+print('Введите число вершин')
+a = int(input())
+#Из-за ограничений работы с памятью, больше 5 вершин корректно сгенерировать проблематично
+Random_Graph_Matrix.RandGraph(c_int(a))
 
-Random_Graph_Matrix.RandGraph(c_int(5))
-
+# Чтение данных из файла
+f = open('data.txt', 'r', encoding='utf-8')
+data = f.read() # Чтение строки с данными
+f.close()
+print(data)
 
 #res_int = adder.add_int(4, 5)
 #print("Сумма 4 и 5 = ", res_int)

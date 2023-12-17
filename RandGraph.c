@@ -12,7 +12,6 @@ void RandGraph(int size)
 
     int **graph;    // Указатель на матрицу смежности
     int *colors;    // Вектор цветов графа
-    int number; // Хроматическое число граа
 
     graph = (int **)malloc(sizeof(int *) * size);
     for(int i = 0; i < size; i++)
@@ -57,25 +56,6 @@ void RandGraph(int size)
 
     //======================================================================
 
-    // Находим наибольший индекс цвета, который и является хроматическим числом
-    for(int i = 0; i < size; i++)
-        if(number < colors[i]) number = colors[i];
-
-    //======================================================================
-
-    for(int i = 0; i < size; i++)
-    {
-        for(int j = 0; j < size; j++)
-        {
-            printf("%c", graph[i][j] + '0');
-        }
-        printf("\n");
-    }
-    for(int i = 0; i < size; i++)
-        printf("%c", colors[i] + '0');
-    printf("\n%c", number + '0');
-
-
     FILE *file;
     file = fopen("data.txt", "w");
     for(int i = 0; i < size; i++)
@@ -89,7 +69,6 @@ void RandGraph(int size)
 
     for(int i = 0; i < size; i++)
         fprintf(file, "%c", colors[i] + '0');
-    fprintf(file, "\n%c", number + '0');
 
     fclose(file);
 
