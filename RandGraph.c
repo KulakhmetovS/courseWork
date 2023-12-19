@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#define MAX_SIZE 500
+
 /*
  Функция, генерирующая псевдорандомом матрицу смежности графа,
  хроматическое число которого требуется найти
@@ -10,12 +12,14 @@ void RandGraph(int size)
 {
     srand(time(NULL));
 
-    int **graph;    // Указатель на матрицу смежности
-    int *colors;    // Вектор цветов графа
+    //int **graph;    // Указатель на матрицу смежности
+    //int *colors;    // Вектор цветов графа
+	
+	int graph[MAX_SIZE][MAX_SIZE], colors[MAX_SIZE], used_colors[MAX_SIZE];
 
-    graph = (int **)malloc(sizeof(int *) * size);
+    /*graph = (int **)malloc(sizeof(int *) * size);
     for(int i = 0; i < size; i++)
-        graph[i] = (int *)malloc(sizeof(int) * size);
+        graph[i] = (int *)malloc(sizeof(int) * size);*/
 
     // Определение псевдорандомом смежных вершин
     for(int i = 0; i < size; i++)
@@ -27,13 +31,17 @@ void RandGraph(int size)
         }
 
     //======================================================================
-    colors = (int *)malloc(sizeof(int) * size);
+    //colors = (int *)malloc(sizeof(int) * size);
     //======================================================================
 
     for (int i = 0; i < size; i++)
     {
         // Инициализация множества использованных цветов соседей
-        int *used_colors = (int *)malloc(sizeof(int) * size);
+        //int *used_colors = (int *)malloc(sizeof(int) * size);
+        
+        for(int i = 0; i < size; i++)
+        	used_colors[i] = 0;
+        
         // Проходим по всем соседям текущей вершины и добавляем их цвета в множество
         for (int j = 0; j < size; j++)
         {
@@ -51,7 +59,7 @@ void RandGraph(int size)
                 break;
             }
         }
-        free(used_colors);
+        //free(used_colors);
     }
 
     //======================================================================
@@ -72,8 +80,8 @@ void RandGraph(int size)
 
     fclose(file);
 
-    free(colors);
-    for(int i = 0; i < size; i++)
-        free(graph[i]);
-    free(graph);
+    //free(colors);
+    //for(int i = 0; i < size; i++)
+    //    free(graph[i]);
+    //free(graph);
 }
