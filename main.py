@@ -7,7 +7,7 @@ from tkinter import *
 #Загружаем библиотеку на С
 Random_Graph_Matrix = CDLL('./RandGraph.so')
 Read_From_File_Matrix = CDLL('./ReadFromFile.so')
-'''
+
 number = 0
 
 window = Tk()
@@ -40,7 +40,6 @@ Random_Graph_Matrix.RandGraph(c_int(size))
 f = open('data.txt', 'r', encoding='utf-8')
 data = f.read() # Чтение строки с данными
 f.close()
-print(data)
 
 k = int(0)
 mas = [0] * size    # Матрица смежности, считываемая из файла
@@ -61,8 +60,6 @@ for i in range(size):
     colors[i] = int(data[k])
     k += 1
 
-print(mas, colors)
-
 # инициализация вектора цветов для покраски графа
 Spectral = ['white'] * size
 
@@ -82,11 +79,11 @@ for i in range(0, size):
 
 # непосредственное рисование графа
 G = nx.DiGraph(np.matrix(mas))
-nx.draw(G, node_color=Spectral, with_labels=True, node_size=600, arrows=True)
+nx.draw(G, node_color=Spectral, with_labels=True, node_size=600, arrows=False)
 plt.show()
 
 ##############################################################################
-'''
+
 window = Tk()
 window.title("Хроматическое число графа")
 window.geometry("450x100")
@@ -157,5 +154,5 @@ for i in range(0, size):
 
 # непосредственное рисование графа
 Gr = nx.DiGraph(np.matrix(Mas))
-nx.draw(Gr, node_color=spectral, with_labels=True, node_size=600, arrows=True)
+nx.draw(Gr, node_color=spectral, with_labels=True, node_size=600, arrows=False)
 plt.show()
