@@ -1,9 +1,11 @@
+import os
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 from ctypes import *
 from tkinter import *
 import tkinter.messagebox as box
+from Colors import *
 
 Random_Graph_Matrix = CDLL('./RandGraph.so')
 Read_From_File_Matrix = CDLL('./ReadFromFile.so')
@@ -18,6 +20,7 @@ def RandomGraph():
 
     def dialog():
         global size
+
         #Обработка исключений
         try:    #В данном случае проверка на возможность конвертации в int
             number=int(entry.get())
@@ -78,19 +81,7 @@ def RandomGraph():
     # инициализация вектора цветов для покраски графа
     Spectral = ['white'] * size
 
-    for i in range(0, size):
-        if colors[i] == 0:
-            Spectral[i] = 'white'
-        elif colors[i] == 1:
-            Spectral[i] = 'red'
-        elif colors[i] == 2:
-            Spectral[i] = 'yellow'
-        elif colors[i] == 3:
-            Spectral[i] = 'green'
-        elif colors[i] == 4:
-            Spectral[i] = 'blue'
-        elif colors[i] == 5:
-            Spectral[i] = 'orange'
+    ColorsInit(colors, Spectral, size)  #Задание цветов для вершин
 
     # непосредственное рисование графа
     G = nx.DiGraph(np.matrix(mas))
@@ -109,6 +100,21 @@ def FromFile():
     def dialog():
         global s
         s = entry.get()
+
+        try:
+            fl = open(entry.get(), "r", encoding='utf-8')
+        except FileNotFoundError:
+            box.showerror('Ошибка при работе с файлом', 'Файл отсутствует или неккоректно введено ' \
+                                                 'имя файла')
+            exit()
+
+        result = os.stat(entry.get())
+        if result.st_size==0:
+            box.showerror('Некорректные данные', 'Файл пуст')
+            exit()
+        fl.close()
+
+
         file = open('filename.txt', 'w', encoding='utf-8')
         file.write(entry.get())
         file.close()
@@ -123,13 +129,12 @@ def FromFile():
     frame.pack()
 
     window.mainloop()
-    #print('Введите число вершин')
-    #size = int(input())
-    #Из-за ограничений работы с памятью, больше 5 вершин корректно сгенерировать проблематично
+
     size=Read_From_File_Matrix.ReadFromFile()
 
     # Чтение данных из файла
     f = open(s, 'r', encoding='utf-8')
+
     Data = f.read() # Чтение строки с данными
     f.close()
 
@@ -143,30 +148,39 @@ def FromFile():
     # Считывание матрицы смежности из файла
     for i in range(0, size):
         for j in range(0, size):
-            Mas[i][j] = int(Data[k])
+
+            try:
+                Mas[i][j] = int(Data[k])
+            except ValueError:  # Если значение - char, string или float, то выходит предупреждение
+                box.showerror('Некорректные данные', 'Некорректные введённые данные в файле')
+                exit()
+            except IndexError:
+                box.showerror('Некорректные данные', 'Некорректные введённые данные в файле')
+                exit()
+
             k += 1
-            if Data[k] == '\n':
-                k += 1
+
+            try:
+                if Data[k] == '\n':
+                    k += 1
+            except IndexError:
+                box.showerror('Некорректные данные', 'Некорректные введённые данные в файле')
+                exit()
 
     # Считывание вектора цветов из файла
     for i in range(0, size):
-        Colors[i] = int(Data[k])
+        try:
+            Colors[i] = int(Data[k])
+        except ValueError:  # Если значение - char, string или float, то выходит предупреждение
+            box.showerror('Некорректные данные', 'Некорректные введённые данные в файле')
+            exit()
+        except IndexError:
+            box.showerror('Некорректные данные', 'Некорректные введённые данные в файле')
+            exit()
         k += 1
 
     # инициализация вектора цветов для покраски графа
-    for i in range(0, size):
-        if Colors[i] == 0:
-            spectral[i] = 'white'
-        elif Colors[i] == 1:
-            spectral[i] = 'red'
-        elif Colors[i] == 2:
-            spectral[i] = 'yellow'
-        elif Colors[i] == 3:
-            spectral[i] = 'green'
-        elif Colors[i] == 4:
-            spectral[i] = 'blue'
-        elif Colors[i] == 5:
-            spectral[i] = 'orange'
+    ColorsInit(Colors, spectral, size)
 
     # непосредственное рисование графа
     Gr = nx.DiGraph(np.matrix(Mas))
