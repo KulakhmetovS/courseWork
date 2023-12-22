@@ -7,7 +7,7 @@
 
 int ReadFromFile()
 {	
-	char filename[80];
+    char filename[80];
     int graph[MAX_SIZE][MAX_SIZE];
     int size;
     int colors[MAX_SIZE], used_colors[MAX_SIZE];

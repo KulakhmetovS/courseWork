@@ -1,3 +1,4 @@
+# Функция для преобразования числового вектора цветов в их строковые значения
 def ColorsInit(colors, spectral, size):
     for i in range(0, size):
         if colors[i] == 0:
@@ -21,9 +22,9 @@ def ColorsInit(colors, spectral, size):
         elif colors[i] == 9:
             spectral[i] = 'gray'
 
-    tmp = int(0)
-    for i in range(0, size):
+    tmp = int(0)     # Переменная для промежуточных значение
+    for i in range(0, size):     # Поиск хроматического числа
         if tmp<colors[i]:
             tmp=colors[i]
-    return tmp
+    return tmp  # Возврат числа цветов
 
