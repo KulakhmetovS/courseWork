@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from ctypes import *
 from tkinter import *
-import tkinter.messagebox as box
+from tkinter.messagebox import showerror
 from Colors import *
 
 Random_Graph_Matrix = CDLL('./RandGraph.so')
@@ -25,18 +25,18 @@ def RandomGraph():
         try:    #В данном случае проверка на возможность конвертации в int
             number=int(entry.get())
         except ValueError:  #Если значение - char, string или float, то выходит предупреждение
-            box.showerror('Некорректные данные', 'Некорректные введённые данные: число вершин '\
+            showerror('Некорректные данные', 'Некорректные введённые данные: число вершин '\
                                     'должно быть целым и положительным')
             exit()
 
         size = number
 
         if size<1:
-            box.showerror('Некорректные данные', 'Некорректные введённые данные: число '\
+            showerror('Некорректные данные', 'Некорректные введённые данные: число '\
                                     'вершин должно быть положительным и не равным 0')
             exit()
         elif size>20:
-            box.showerror('Некорректные данные', 'Слишком большое число вершин: '\
+            showerror('Некорректные данные', 'Слишком большое число вершин: '\
                                                  'предпочтительно генерировать не более 20 вершин')
             exit()
 
@@ -81,11 +81,17 @@ def RandomGraph():
     # инициализация вектора цветов для покраски графа
     Spectral = ['white'] * size
 
-    ColorsInit(colors, Spectral, size)  #Задание цветов для вершин
+    ChrNumber = int(0)  #Хроматическое число
+    ChrNumber = ColorsInit(colors, Spectral, size)  #Задание цветов для вершин
 
     # непосредственное рисование графа
     G = nx.DiGraph(np.matrix(mas))
     nx.draw(G, node_color=Spectral, with_labels=True, node_size=600, arrows=False)
+
+    Str = 'Хроматическое число графа = ' + str(ChrNumber)
+    fig = plt.gcf()
+    fig.canvas.manager.set_window_title(Str)
+
     plt.show()
 
 ##############################################################################
@@ -104,13 +110,13 @@ def FromFile():
         try:
             fl = open(entry.get(), "r", encoding='utf-8')
         except FileNotFoundError:
-            box.showerror('Ошибка при работе с файлом', 'Файл отсутствует или неккоректно введено ' \
+            showerror('Ошибка при работе с файлом', 'Файл отсутствует или неккоректно введено ' \
                                                  'имя файла')
             exit()
 
         result = os.stat(entry.get())
         if result.st_size==0:
-            box.showerror('Некорректные данные', 'Файл пуст')
+            showerror('Некорректные данные', 'Файл пуст')
             exit()
         fl.close()
 
@@ -152,10 +158,10 @@ def FromFile():
             try:
                 Mas[i][j] = int(Data[k])
             except ValueError:  # Если значение - char, string или float, то выходит предупреждение
-                box.showerror('Некорректные данные', 'Некорректные введённые данные в файле')
+                showerror('Некорректные данные', 'Некорректные введённые данные в файле')
                 exit()
             except IndexError:
-                box.showerror('Некорректные данные', 'Некорректные введённые данные в файле')
+                showerror('Некорректные данные', 'Некорректные введённые данные в файле')
                 exit()
 
             k += 1
@@ -164,7 +170,7 @@ def FromFile():
                 if Data[k] == '\n':
                     k += 1
             except IndexError:
-                box.showerror('Некорректные данные', 'Некорректные введённые данные в файле')
+                showerror('Некорректные данные', 'Некорректные введённые данные в файле')
                 exit()
 
     # Считывание вектора цветов из файла
@@ -172,17 +178,23 @@ def FromFile():
         try:
             Colors[i] = int(Data[k])
         except ValueError:  # Если значение - char, string или float, то выходит предупреждение
-            box.showerror('Некорректные данные', 'Некорректные введённые данные в файле')
+            showerror('Некорректные данные', 'Некорректные введённые данные в файле')
             exit()
         except IndexError:
-            box.showerror('Некорректные данные', 'Некорректные введённые данные в файле')
+            showerror('Некорректные данные', 'Некорректные введённые данные в файле')
             exit()
         k += 1
 
     # инициализация вектора цветов для покраски графа
-    ColorsInit(Colors, spectral, size)
+    chrNumber = int(0)
+    chrNumber = ColorsInit(Colors, spectral, size)
 
     # непосредственное рисование графа
     Gr = nx.DiGraph(np.matrix(Mas))
     nx.draw(Gr, node_color=spectral, with_labels=True, node_size=600, arrows=False)
+
+    Str = 'Хроматическое число графа = ' + str(chrNumber)
+    fig = plt.gcf()
+    fig.canvas.manager.set_window_title(Str)
+
     plt.show()

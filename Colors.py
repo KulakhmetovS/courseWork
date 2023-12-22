@@ -20,3 +20,10 @@ def ColorsInit(colors, spectral, size):
             spectral[i] = 'pink'
         elif colors[i] == 9:
             spectral[i] = 'gray'
+
+    tmp = int(0)
+    for i in range(0, size):
+        if tmp<colors[i]:
+            tmp=colors[i]
+    return tmp
+
