@@ -3,23 +3,40 @@ import numpy as np
 import matplotlib.pyplot as plt
 from ctypes import *
 from tkinter import *
+import tkinter.messagebox as box
 
 Random_Graph_Matrix = CDLL('./RandGraph.so')
 Read_From_File_Matrix = CDLL('./ReadFromFile.so')
 
 def RandomGraph():
-    number = 0
-
     window = Tk()
     window.title("Хроматическое число графа")
     window.geometry("450x100")
 
-    frame = Frame(window)
+    frame = Frame()
     entry = Entry(frame)
+
     def dialog():
         global size
-        number=int(entry.get())
+        #Обработка исключений
+        try:    #В данном случае проверка на возможность конвертации в int
+            number=int(entry.get())
+        except ValueError:  #Если значение - char, string или float, то выходит предупреждение
+            box.showerror('Некорректные данные', 'Некорректные введённые данные: число вершин '\
+                                    'должно быть целым и положительным')
+            exit()
+
         size = number
+
+        if size<1:
+            box.showerror('Некорректные данные', 'Некорректные введённые данные: число '\
+                                    'вершин должно быть положительным и не равным 0')
+            exit()
+        elif size>20:
+            box.showerror('Некорректные данные', 'Слишком большое число вершин: '\
+                                                 'предпочтительно генерировать не более 20 вершин')
+            exit()
+
         window.destroy()
 
     btn = Button(frame, text="Enter", command=dialog)
@@ -31,9 +48,7 @@ def RandomGraph():
     frame.pack()
 
     window.mainloop()
-    #print('Введите число вершин')
-    #size = int(input())
-    #Из-за ограничений работы с памятью, больше 5 вершин корректно сгенерировать проблематично
+
     Random_Graph_Matrix.RandGraph(c_int(size))
 
     # Чтение данных из файла
